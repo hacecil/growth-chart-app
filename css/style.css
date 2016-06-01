@@ -2388,7 +2388,7 @@ svg {
 /* bmi */
 .datatable-headers .bmi td + td {
 	color: #B26666;
-	border-right: 1px solid #B26666;
+	border-right: 1px solid #BBC6CE;
 	text-align: right;
 }
 

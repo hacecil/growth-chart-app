@@ -183,6 +183,8 @@ XDate, setTimeout, getDataSet*/
                 return GC.DATA_SETS[ds + "_WEIGHT"];
             case "headc":
                 return GC.DATA_SETS[ds + "_HEAD_CIRCUMFERENCE_INF"];
+            case "bmi":
+                return GC.DATA_SETS[ds + "_BMI"];
         }
     }
     
@@ -597,6 +599,13 @@ XDate, setTimeout, getDataSet*/
                 style : "color:black"
             },
             {
+                label : "BMI %",
+                get   : function( entry, model ) {
+                    return getPercentile( entry, "bmi" );
+                },
+                style : "color:black"
+            },
+            {
                 label : "Bone Age",
                 get   : function( entry, model ) {
                     if (entry.hasOwnProperty("boneAge")) {
@@ -854,6 +863,16 @@ XDate, setTimeout, getDataSet*/
                     printrow : 1
                 },
                 
+                // BMI %
+                {
+                    label : "STR_9", // Percentile
+                    units : { metric : "%", eng : "%" },
+                    get   : function( entry, model ) {
+                        return getPercentile( entry, "bmi" );
+                    },
+                    rowClass : "bmi percentile",
+                    printrow : 1
+                },
                 {
                     label : "STR_11", // Bone Age
                     units : { metric : "y - m", eng : "y - m" },
