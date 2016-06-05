@@ -697,10 +697,94 @@
             });
         }
 
+        function isSGA(percentile){
+            return Math.round(percentile * 100) < 10;
+        };
+
+        function isLGA(percentile){
+            return Math.round(percentile * 100) > 90;
+        };
+
+        function getException(type, percentile){
+            if (isSGA(percentile) || isLGA(percentile)){
+                var percentileStr = Math.round((percentile * 100)).toString();
+                return type + " " + percentileStr + "%";
+            }
+        }
+
+        function handleSGA(heightFenton, weightFenton, headCFenton) {
+            $('.sga-alert').hide();
+
+            var sgaExceptions = new Array();
+            var sgaException = false;
+
+            if ((heightFenton != null && heightFenton.hasOwnProperty("percentile") && isSGA(heightFenton.percentile))) {
+                sgaExceptions.push(getException("length", heightFenton.percentile));
+                sgaException = true;
+            }
+
+            if ((weightFenton != null && weightFenton.hasOwnProperty("percentile") && isSGA(weightFenton.percentile))) {
+                sgaExceptions.push(getException("weight", weightFenton.percentile));
+                sgaException = true;
+            }
+            if (headCFenton != null && headCFenton.hasOwnProperty("percentile") && isSGA(headCFenton.percentile)) {
+                sgaExceptions.push(getException("head circumference", headCFenton.percentile));
+                sgaException = true;
+            }
+
+            if (sgaException) {
+                var sgaMessage = "SGA : " + sgaExceptions.join(", ") + ".";
+                $('.patient-fenton-sga').text(sgaMessage);
+                var div = $('.patient-fenton-sga').closest('.header-table-wrap');
+                div.height(67);
+                $('.sga-alert').show();
+            }
+            return sgaException;
+        };
+
+
+        function handleLGA(heightFenton, weightFenton, headCFenton, hasSGA){
+            $('.lga-alert').hide();
+
+            var lgaExceptions = new Array();
+            var lgaException = false;
+
+            if ((heightFenton != null && heightFenton.hasOwnProperty("percentile") && isLGA(heightFenton.percentile))) {
+                lgaExceptions.push(getException("length", heightFenton.percentile));
+                lgaException = true;
+            }
+
+            if ((weightFenton != null && weightFenton.hasOwnProperty("percentile") && isLGA(weightFenton.percentile))) {
+                lgaExceptions.push(getException("weight", weightFenton.percentile));
+                lgaException = true;
+            }
+            if (headCFenton != null && headCFenton.hasOwnProperty("percentile") && isLGA(headCFenton.percentile)) {
+                lgaExceptions.push(getException("head circumference", headCFenton.percentile));
+                lgaException = true;
+            }
+
+            if (lgaException) {
+                var sgaMessage = "LGA : " + lgaExceptions.join(", ") + ".";
+                $('.patient-fenton-lga').text(sgaMessage);
+                var div = $('.patient-fenton-lga').closest('.header-table-wrap');
+                div.height(hasSGA ? div.height() + 16 : 67);
+                $('.lga-alert').show();
+            }
+        };
+
+        function handleFentonExceptionBanner() {
+            var heightFenton = PATIENT.getLatestPercentileValue("lengthAndStature", GC.DATA_SETS.FENTON_LENGTH);
+            var weightFenton = PATIENT.getLatestPercentileValue("weight", GC.DATA_SETS.FENTON_WEIGHT);
+            var headCFenton = PATIENT.getLatestPercentileValue("headc", GC.DATA_SETS.FENTON_HEADC);
+
+            var hasSGA = handleSGA(heightFenton, weightFenton, headCFenton);
+            handleLGA(heightFenton, weightFenton, headCFenton, hasSGA);
+        };
+
         function renderPatient() {
             var currentAge = PATIENT.getCurrentAge();
             var correctedAge = PATIENT.getCorrectedAge();
-
+            handleFentonExceptionBanner();
             $('.patient-name').text(PATIENT.name);
             $('.patient-gender').text(GC.str("STR_SMART_GENDER_" + PATIENT.gender));
             $('.patient-gender').attr("data-translatecontent", "STR_SMART_GENDER_" + PATIENT.gender);

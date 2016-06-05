@@ -307,9 +307,18 @@ table.header-table tr.last td {
 	height  : 2.8em;
 }
 
+.lga-sga-alert{
+    color: #8a6d3b !important;
+    background-color: #fcf8e3 !important;
+    border-color: #faebcc !important;
+}
+
+.sga-alert i, .lga-alert i {
+    margin: 0 10px;
+}
 
 .settings-expanded .header-table-wrap {
-	height: auto;
+	height: auto !important;
 }
 .settings-expanded table.header-table td,
 .settings-expanded table.header-table th {

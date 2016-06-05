@@ -954,7 +954,34 @@ window.GC = window.GC || {};
             title      : GC.str("STR_33") // Nominal Height
         };
     };
-    
+
+    GC.Patient.prototype.getLatestPercentileValue = function (type, chart){
+        var lastEntry = this.getLastEnryHaving(type);
+
+        if ( !lastEntry ){
+            return null;
+        }
+
+        var dataSet = chart;
+        var data = dataSet.data[this.gender];
+        var lastAgeMos = GC.Util.findMinMax(data, "Agemos").max;
+
+        if (lastAgeMos < lastEntry.agemos){
+            return null;
+        }
+
+        var pctLast = GC.findPercentileFromX(
+            lastEntry[type],
+            dataSet,
+            this.gender,
+            lastEntry.agemos
+        );
+
+        return {
+            percentile : pctLast
+        };
+    };
+
     GC.Patient.prototype.getVelocity = function( prop, atRecord, toRecord, denominator, suffix ) {
         if ( atRecord.hasOwnProperty(prop) ) {
             toRecord = toRecord || this.getPrevModelEntry(atRecord.agemos, function(o) {
