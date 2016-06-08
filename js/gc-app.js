@@ -1158,6 +1158,27 @@
                     ds = GC.chartSettings.defaultBabyChart;
                 }
             }
+            var defaultChartType = GC.Preferences.prop("defaultChartType");
+
+            if (defaultChartType != null)
+            {
+                switch(defaultChartType){
+                    case 'WHO':
+                    case 'CDC':
+                        ds = defaultChartType;
+                        break;
+                    case 'DWN':
+                        ds = 'AAP_DOWN';
+                        break;
+                    case 'FNT' :
+                        ds = 'FENTON';
+                        break;
+                    case 'OLS' :
+                        ds = 'OLSEN';
+                        break;
+                }
+            }
+
             $("#primary-ds").menuButton("value", ds);
 
             PRIMARY_CHART_TYPE = $("#primary-ds").bind("menubuttonchange", function(e, data) {

@@ -24,7 +24,9 @@ GC.get_data = function() {
   function onReady(smart){
 
     var hidePatientHeader = (smart.tokenResponse.need_patient_banner === false);
+    var defaultChartType = (smart.tokenResponse.default_chart);
     GC.Preferences.prop("hidePatientHeader", hidePatientHeader);
+    GC.Preferences.prop("defaultChartType", defaultChartType);
 
     function defaultOnFail(promise, defaultValue) {
       var deferred = $.Deferred();
